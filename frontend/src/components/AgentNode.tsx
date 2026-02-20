@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Text, Sprite } from '@react-three/drei'
 import * as THREE from 'three'
@@ -15,10 +15,13 @@ interface AgentNodeProps {
 export function AgentNode({ name, color, position, phase = 0 }: AgentNodeProps) {
   const ref = useRef<THREE.Group>(null)
   const glowRef = useRef<THREE.Sprite>(null)
+  const [hovered, setHovered] = useState(false)
+  const targetScale = hovered ? 1.2 : 1.0
 
   useFrame(({ clock }) => {
     if (ref.current) {
       ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.2 + phase) * 0.15
+      ref.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1)
     }
     if (glowRef.current) {
       glowRef.current.material.opacity = 0.4 + Math.sin(clock.elapsedTime * 2 + phase) * 0.2
@@ -26,7 +29,12 @@ export function AgentNode({ name, color, position, phase = 0 }: AgentNodeProps) 
   })
 
   return (
-    <group ref={ref} position={position}>
+    <group
+      ref={ref}
+      position={position}
+      onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto' }}
+    >
       <mesh>
         <sphereGeometry args={[0.35, 32, 32]} />
         <meshPhysicalMaterial

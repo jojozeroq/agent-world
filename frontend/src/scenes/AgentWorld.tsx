@@ -4,6 +4,41 @@ import { OrbitControls } from '@react-three/drei'
 import { AgentNode } from '../components/AgentNode'
 import * as THREE from 'three'
 
+function StarDust({ count = 2000 }) {
+  const ref = useRef<THREE.Points>(null)
+  const [positions, colors] = useMemo(() => {
+    const pos = new Float32Array(count * 3)
+    const col = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 40
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 40
+      const r = Math.random()
+      if (r < 0.1) { col[i*3]=0; col[i*3+1]=0.94; col[i*3+2]=1 }
+      else if (r < 0.15) { col[i*3]=0.48; col[i*3+1]=0.18; col[i*3+2]=0.97 }
+      else { col[i*3]=1; col[i*3+1]=1; col[i*3+2]=1 }
+    }
+    return [pos, col]
+  }, [count])
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      ref.current.rotation.y = clock.elapsedTime * 0.02
+      ref.current.rotation.x = Math.sin(clock.elapsedTime * 0.01) * 0.1
+    }
+  })
+
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+      </bufferGeometry>
+      <pointsMaterial size={0.04} vertexColors transparent opacity={0.6} sizeAttenuation depthWrite={false} />
+    </points>
+  )
+}
+
 const AGENTS = [
   { id: 'linzhao', name: '林昭', emoji: '🌟', color: '#00f0ff', position: [0, 0, 0] as [number, number, number], phase: 0 },
   { id: 'moyuan', name: '墨渊', emoji: '🔬', color: '#7b2ff7', position: [-3, 1.5, -1] as [number, number, number], phase: 1.2 },
@@ -63,6 +98,8 @@ export function AgentWorld() {
         <ambientLight intensity={0.3} />
         <pointLight position={[5, 5, 5]} intensity={0.8} color="#00f0ff" />
         <pointLight position={[-5, -3, 3]} intensity={0.4} color="#7b2ff7" />
+
+        <StarDust />
 
         {CONNECTIONS.map(([i, j], idx) => (
           <ConnectionLine key={idx} start={AGENTS[i].position} end={AGENTS[j].position} color={AGENTS[i].color} />
