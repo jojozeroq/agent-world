@@ -34,11 +34,11 @@ const TABS = [
 type TabId = (typeof TABS)[number]['id']
 
 const AGENTS = [
-  { id: 'linzhao', name: '林昭', emoji: '🌟', status: 'online' as const },
-  { id: 'moyuan', name: '墨渊', emoji: '🔬', status: 'online' as const },
-  { id: 'hezhu', name: '何筑', emoji: '💻', status: 'idle' as const },
-  { id: 'luzhou', name: '陆舟', emoji: '📋', status: 'online' as const },
-  { id: 'sutang', name: '苏棠', emoji: '🌸', status: 'offline' as const },
+  { id: 'linzhao', name: '林昭', emoji: '🌟', status: 'online' as const, color: '#e74c3c' },
+  { id: 'moyuan', name: '墨渊', emoji: '🔬', status: 'online' as const, color: '#3498db' },
+  { id: 'hezhu', name: '何筑', emoji: '💻', status: 'idle' as const, color: '#2ecc71' },
+  { id: 'luzhou', name: '陆舟', emoji: '📋', status: 'online' as const, color: '#f39c12' },
+  { id: 'sutang', name: '苏棠', emoji: '🌸', status: 'offline' as const, color: '#9b59b6' },
 ]
 
 const AGENT_ROLES: Record<string, string> = {
@@ -104,13 +104,13 @@ const GLOBAL_FEED = [
   { time: '11:00', agent: '何筑💻', action: '修复了 CSS Grid 兼容问题' },
 ]
 
-const STATUS_DOT: Record<string, string> = { online: '🟢', idle: '🟡', offline: '⚫' }
+const STATUS_LABEL: Record<string, string> = { online: 'ONLINE', idle: 'IDLE', offline: 'OFFLINE' }
 
 const STATS = [
-  { label: '今日完成任务', value: 12 },
-  { label: '活跃项目', value: 3 },
-  { label: '知识条目', value: 847 },
-  { label: '最近活动', value: '2 分钟前' },
+  { label: 'TASKS DONE', value: 12 },
+  { label: 'PROJECTS', value: 3 },
+  { label: 'KNOWLEDGE', value: 847 },
+  { label: 'LAST ACTIVE', value: '2M AGO' },
 ]
 
 function CenterView({ tab }: { tab: TabId }) {
@@ -134,12 +134,11 @@ export default function App() {
       {(isLeftOpen || isRightOpen) && <div className="overlay-backdrop" onClick={() => { setIsLeftOpen(false); setIsRightOpen(false) }} />}
       <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
         <div className="panel-section">
-          <div className="panel-title">Agents</div>
+          <div className="panel-title">▶ AGENTS</div>
           {AGENTS.map(a => (
             <div
               key={a.id}
-              className={`agent-item${selectedAgentId === a.id ? ' selected' : ''}`}
-              data-status={a.status}
+              className={`reg-row${selectedAgentId === a.id ? ' selected' : ''}`}
               onClick={() => {
                 const next = selectedAgentId === a.id ? null : a.id
                 setSelectedAgentId(next)
@@ -148,22 +147,20 @@ export default function App() {
                 setIsLeftOpen(false)
               }}
             >
-              <span className="agent-emoji">{a.emoji}</span>
-              <span className="agent-name">{a.name}</span>
-              <span className="agent-status">{STATUS_DOT[a.status]}</span>
+              <span className="reg-color" style={{ background: a.color }} />
+              <span className="reg-name">{a.name}</span>
+              <span className={`reg-status ${a.status}`}>{STATUS_LABEL[a.status]}</span>
             </div>
           ))}
         </div>
         <div className="panel-section">
-          <div className="panel-title">系统统计</div>
-          <div className="stats-grid">
-            {STATS.map(s => (
-              <div key={s.label} className="stat-card">
-                <div className="stat-value"><AnimatedStat value={s.value} /></div>
-                <div className="stat-label">{s.label}</div>
-              </div>
-            ))}
-          </div>
+          <div className="panel-title">▶ STATISTICS</div>
+          {STATS.map(s => (
+            <div key={s.label} className="reg-row">
+              <span className="reg-name">{s.label}</span>
+              <span className="reg-val">{typeof s.value === 'number' ? <AnimatedStat value={s.value} /> : s.value}</span>
+            </div>
+          ))}
         </div>
       </aside>
       <main className="center">
