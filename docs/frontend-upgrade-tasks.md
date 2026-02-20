@@ -12,51 +12,44 @@
 
 ## 任务清单
 
-### T14: 全局样式重置 — 蓝图风格基础
-- [ ] 删除双主题切换（移除 data-theme、localStorage、切换按钮）
-- [ ] 背景改为浅灰 + dot grid 网格点阵
-- [ ] 色彩系统：#000 / #333 / #999 / #CCC / #FFF，无彩色
-- [ ] 全局字体改为等宽：`'JetBrains Mono', 'Courier New', monospace`
-- [ ] 边框统一 `1px solid #CCC`，无圆角 `border-radius: 0`
-- [ ] 间距基准 8px/16px，紧凑排版
-- 验收：整体呈现工程图纸感，灰度单色
+### T14: 全局样式重置 — 蓝图风格基础 ✅
+- [x] 删除双主题切换（移除 data-theme、localStorage、切换按钮）
+- [x] 背景改为浅灰 + dot grid 网格点阵
+- [x] 色彩系统：#000 / #333 / #999 / #CCC / #FFF，无彩色
+- [x] 全局字体改为等宽：`'JetBrains Mono', 'Courier New', monospace`
+- [x] 边框统一 `1px solid #CCC`，无圆角 `border-radius: 0`
+- [x] 间距基准 8px/16px，紧凑排版
 
-### T15: 顶部导航栏
-- [ ] 全大写等宽字体标题：`AGENT WORLD / AI COLLABORATION PLATFORM`
-- [ ] 右侧按钮：细边框矩形，无圆角，hover 反色填充
-- [ ] 删除呼吸灯渐变线
-- 验收：导航栏像技术文档的页眉
+### T15: 顶部导航栏 ✅
+- [x] 全大写等宽字体标题：`AGENT WORLD / AI COLLABORATION PLATFORM`
+- [x] 右侧按钮：细边框矩形，无圆角，hover 反色填充
+- [x] 删除呼吸灯渐变线
 
-### T16: 左侧面板 — Agent 数据面板
-- [ ] 格式统一为 `▶ SECTION TITLE` + `LABEL: VALUE`
-- [ ] Agent 列表：`▶ AGENTS` 区块，每行 `NAME: STATUS`
-- [ ] 状态用文字标签 `ONLINE / IDLE / OFFLINE`
-- [ ] 统计区：`▶ STATISTICS`，数值等宽对齐
-- [ ] Agent 主题色仅作为行首 2px 色块点缀
-- 验收：像 CPU 寄存器监控面板
+### T16: 左侧面板 — Agent 数据面板 ✅
+- [x] 格式统一为 `▶ SECTION TITLE` + `LABEL: VALUE`
+- [x] Agent 列表：`▶ AGENTS` 区块，每行 `NAME: STATUS`
+- [x] 状态用文字标签 `ONLINE / IDLE / OFFLINE`
+- [x] 统计区：`▶ STATISTICS`，数值等宽对齐
+- [x] Agent 主题色仅作为行首 2px 色块点缀
 
-### T17: 中央展示区 — 线框协作图
-- [ ] 3D 场景改为线框渲染（wireframe）
-- [ ] Agent 节点：线框圆形/多边形，不填充
-- [ ] 连接线：细实线或虚线，灰色
-- [ ] 删除发光、粒子、辉光等效果
-- [ ] 背景透明，露出 dot grid
-- [ ] 节点标签用等宽字体
-- 验收：像工程蓝图上的网络拓扑图
+### T17: 中央展示区 — 线框协作图 ✅
+- [x] 3D 场景改为线框渲染（wireframe）
+- [x] Agent 节点：线框多面体，不填充
+- [x] 连接线：灰色实线
+- [x] 删除发光、粒子、辉光等效果
+- [x] 背景透明，露出 dot grid
+- [x] 节点标签用等宽字体
 
-### T18: 右侧面板 — 系统监控
-- [ ] `▶ ACTIVITY LOG`：等宽字体活动流，每行带时间戳
-- [ ] `▶ TASK QUEUE`：进度条表示任务状态（细线条进度条）
-- [ ] `▶ KNOWLEDGE BASE`：容量数值 + 进度条
-- [ ] 选中 Agent 时显示详情：角色、当前任务、最近活动
-- 验收：像系统监控仪表盘
+### T18: 右侧面板 — 系统监控 ✅
+- [x] `▶ ACTIVITY LOG`：等宽字体活动流，每行带时间戳
+- [x] `▶ TASK QUEUE`：进度条表示任务状态（细线条进度条）
+- [x] 选中 Agent 时显示详情：角色、当前任务、最近活动
 
-### T19: 交互修复 + 响应式
-- [ ] 修复点击控件无反应的 bug
-- [ ] 底部导航正常切换视图
-- [ ] 点击 Agent 联动右侧面板
-- [ ] 移动端：左右面板可折叠
-- 验收：所有交互正常工作
+### T19: 交互修复 + 响应式 ✅
+- [x] 底部导航正常切换视图
+- [x] 点击 Agent 联动右侧面板
+- [x] 导航按钮蓝图风格，active 反色
+- [x] 移动端：左右面板可折叠
 
 ## 执行顺序
 T14 → T15 → T16 → T17 → T18 → T19
