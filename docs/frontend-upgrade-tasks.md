@@ -14,12 +14,12 @@
 - [x] 顶部加 1px 呼吸灯渐变线（青→紫循环 4s）
 - 验收：整体深色科技感，面板悬浮毛玻璃效果
 
-### T8: 字体 + 排版规范
-- [ ] 引入 Space Grotesk（标题）+ Inter（正文）+ JetBrains Mono（数据）
-- [ ] 用 Google Fonts CDN，index.html 里 preconnect + link
-- [ ] 字号体系：H1=24px/600, H2=16px/600, Body=13px/400, Caption=11px/400, Data=28px/700
-- [ ] 区块标题大写 + letter-spacing: 0.08em
-- [ ] 数字用等宽字体
+### T8: 字体 + 排版规范 ✅
+- [x] 引入 Space Grotesk（标题）+ Inter（正文）+ JetBrains Mono（数据）
+- [x] 用 Google Fonts CDN，index.html 里 preconnect + link
+- [x] 字号体系：H1=24px/600, H2=16px/600, Body=13px/400, Caption=11px/400, Data=28px/700
+- [x] 区块标题大写 + letter-spacing: 0.08em
+- [x] 数字用等宽字体
 - 验收：字体加载正常，排版层次清晰
 
 ## P1 — 面板改造
