@@ -24,11 +24,11 @@ function AnimatedStat({ value }: { value: number | string }) {
 }
 
 const TABS = [
-  { id: 'world', label: '🌐 世界' },
-  { id: 'tasks', label: '📋 任务' },
-  { id: 'knowledge', label: '📚 知识' },
-  { id: 'projects', label: '📊 项目' },
-  { id: 'settings', label: '⚙️ 设置' },
+  { id: 'world', label: 'WORLD' },
+  { id: 'tasks', label: 'TASKS' },
+  { id: 'knowledge', label: 'KNOWLEDGE' },
+  { id: 'projects', label: 'PROJECTS' },
+  { id: 'settings', label: 'SETTINGS' },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']
