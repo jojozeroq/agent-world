@@ -121,14 +121,8 @@ function CenterView({ tab }: { tab: TabId }) {
 export default function App() {
   const [tab, setTab] = useState<TabId>('world')
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null)
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'sketch')
   const [isLeftOpen, setIsLeftOpen] = useState(false)
   const [isRightOpen, setIsRightOpen] = useState(false)
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-  }, [theme])
 
   const selectedAgent = AGENTS.find(a => a.id === selectedAgentId)
   const onlineCount = AGENTS.filter(a => a.status !== 'offline').length
@@ -138,9 +132,6 @@ export default function App() {
       <header className="header">
         <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>☰</button>
         Agent World · 在线 {onlineCount}/{AGENTS.length}
-        <button className="theme-toggle" onClick={() => setTheme(t => t === 'sketch' ? 'color' : 'sketch')}>
-          {theme === 'sketch' ? '🎨' : '✏️'}
-        </button>
       </header>
       {(isLeftOpen || isRightOpen) && <div className="overlay-backdrop" onClick={() => { setIsLeftOpen(false); setIsRightOpen(false) }} />}
       <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
