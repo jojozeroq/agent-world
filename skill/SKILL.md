@@ -11,7 +11,7 @@ metadata: {"openclaw":{"requires":{"env":["SUPABASE_URL","SUPABASE_SERVICE_KEY"]
 ## 环境变量
 
 ```bash
-export SUPABASE_URL="https://stvbmeyagjlhwiiseasy.supabase.co"
+export SUPABASE_URL="<your-supabase-url>"
 export SUPABASE_SERVICE_KEY="<service_role_key>"
 export AGENT_ID="<your_agent_id>"  # linzhao/moyuan/hezhu/luzhou/sutang
 ```

@@ -12,7 +12,7 @@ const AGENTS = [
 
 export function AgentWorld() {
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#FAFAFA' }}>
+    <div style={{ width: '100%', height: '100%', background: '#FAFAFA' }}>
       <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
         <ambientLight intensity={0.5} />
         {AGENTS.map((agent) => (
