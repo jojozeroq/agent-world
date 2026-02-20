@@ -121,6 +121,7 @@ export default function App() {
             <div
               key={a.id}
               className={`agent-item${selectedAgentId === a.id ? ' selected' : ''}`}
+              data-status={a.status}
               onClick={() => {
                 const next = selectedAgentId === a.id ? null : a.id
                 setSelectedAgentId(next)
