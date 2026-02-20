@@ -26,39 +26,54 @@ html, body, #root {
 }
 
 .layout {
-  display: grid;
-  grid-template-rows: var(--header-height) 1fr var(--nav-height);
-  grid-template-columns: var(--left-width) 1fr var(--right-width);
-  height: 100vh;
+  position: relative;
+  width: 100%; height: 100vh;
+  overflow: hidden;
 }
 
 .header {
-  grid-column: 1 / -1;
+  position: absolute; top: 0; left: 0; right: 0; height: var(--header-height);
   display: flex; align-items: center; justify-content: center;
   border-bottom: 1px solid #ccc;
   background: transparent;
   font-size: 12px; font-weight: 600; gap: 8px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  position: relative; z-index: 10;
+  z-index: 10; pointer-events: none;
 }
+.header > * { pointer-events: auto; }
 
-.left-panel, .right-panel {
+.left-panel {
+  position: absolute; left: 0; top: var(--header-height); bottom: var(--nav-height);
+  width: var(--left-width);
   padding: 12px; overflow-y: auto;
-  border: 1px solid var(--border);
-  background: var(--panel-bg);
-  margin: 8px;
-  position: relative; z-index: 10;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  z-index: 10;
 }
 
-.center { overflow: hidden; position: relative; z-index: 1; touch-action: none; }
+.right-panel {
+  position: absolute; right: 0; top: var(--header-height); bottom: var(--nav-height);
+  width: var(--right-width);
+  padding: 12px; overflow-y: auto;
+  border-left: 1px solid var(--border);
+  background: transparent;
+  z-index: 10;
+}
+
+.center {
+  position: absolute; inset: 0;
+  z-index: 1; touch-action: none;
+}
 
 .nav {
-  grid-column: 1 / -1;
+  position: absolute; bottom: 0; left: 0; right: 0; height: var(--nav-height);
   display: flex; align-items: center; justify-content: center;
   gap: 4px; border-top: 1px solid var(--border);
-  position: relative; z-index: 10;
+  background: transparent;
+  z-index: 10; pointer-events: none;
 }
+.nav > * { pointer-events: auto; }
 
 .nav button {
   background: none; border: 1px solid var(--border);
@@ -141,10 +156,13 @@ html, body, #root {
 }
 .hamburger:hover { background: #000; color: #fff; }
 
-.overlay-backdrop {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.2); z-index: 90;
+.panel-close {
+  display: none; position: absolute; top: 8px; right: 8px;
+  background: transparent; border: 1px solid #ccc; font-size: 12px;
+  cursor: pointer; color: #000; padding: 2px 8px;
+  font-family: inherit; letter-spacing: 0.08em;
 }
+.panel-close:hover { background: #000; color: #fff; }
 
 .placeholder {
   display: flex; align-items: center; justify-content: center;
@@ -153,28 +171,29 @@ html, body, #root {
 
 /* Tablet & Mobile: <=1024px */
 @media (max-width: 1024px) {
-  .layout { grid-template-columns: 1fr; }
   .hamburger { display: block; }
+  .panel-close { display: block; }
   .left-panel {
-    display: none;
     position: fixed; left: 0; top: var(--header-height); bottom: var(--nav-height);
     width: 240px; z-index: 100;
     background-color: var(--bg);
     background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
     background-size: 20px 20px;
     border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-out;
   }
-  .left-panel.open { display: block; }
+  .left-panel.open { transform: translateX(0); }
   .right-panel {
-    display: none;
     position: fixed; right: 0; top: var(--header-height); bottom: var(--nav-height);
     width: 280px; z-index: 100;
     border-left: 1px solid var(--border);
     background-color: var(--bg);
     background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
     background-size: 20px 20px;
+    transform: translateX(100%);
+    transition: transform 0.25s ease-out;
   }
-  .right-panel.open { display: block; }
-  .overlay-backdrop { display: block; }
+  .right-panel.open { transform: translateX(0); }
   .nav button { font-size: 11px; padding: 6px 8px; }
 }

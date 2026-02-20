@@ -130,8 +130,8 @@ export default function App() {
         <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>[MENU]</button>
         AGENT WORLD / AI COLLABORATION PLATFORM
       </header>
-      {(isLeftOpen || isRightOpen) && <div className="overlay-backdrop" onClick={() => { setIsLeftOpen(false); setIsRightOpen(false) }} />}
       <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
+        <button className="panel-close" onClick={() => setIsLeftOpen(false)}>[X]</button>
         <div className="panel-section">
           <div className="panel-title">▶ AGENTS</div>
           {AGENTS.map(a => (
@@ -166,6 +166,7 @@ export default function App() {
         <CenterView tab={tab} />
       </main>
       <aside className={`right-panel${isRightOpen ? ' open' : ''}`}>
+        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null); setIsLeftOpen(true) }}>[X]</button>
         {selectedAgent ? (
           <>
             <div className="panel-section">
