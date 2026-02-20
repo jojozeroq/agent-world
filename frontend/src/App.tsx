@@ -125,13 +125,11 @@ export default function App() {
   const [isRightOpen, setIsRightOpen] = useState(false)
 
   const selectedAgent = AGENTS.find(a => a.id === selectedAgentId)
-  const onlineCount = AGENTS.filter(a => a.status !== 'offline').length
-
   return (
     <div className="layout">
       <header className="header">
-        <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>☰</button>
-        Agent World · 在线 {onlineCount}/{AGENTS.length}
+        <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>[MENU]</button>
+        AGENT WORLD / AI COLLABORATION PLATFORM
       </header>
       {(isLeftOpen || isRightOpen) && <div className="overlay-backdrop" onClick={() => { setIsLeftOpen(false); setIsRightOpen(false) }} />}
       <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
