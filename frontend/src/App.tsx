@@ -28,6 +28,14 @@ const AGENT_ROLES: Record<string, string> = {
   sutang: '用户体验设计师，负责交互设计',
 }
 
+const AGENT_TAGS: Record<string, string[]> = {
+  linzhao: ['协调', '创意', '决策'],
+  moyuan: ['调研', '分析', '评估'],
+  hezhu: ['编码', 'React', 'Three.js'],
+  luzhou: ['管理', '进度', '文档'],
+  sutang: ['设计', 'UX', '交互'],
+}
+
 const AGENT_TASKS: Record<string, string> = {
   linzhao: '正在协调 v2 前端开发任务分配',
   moyuan: '正在调研 WebSocket 实时通信方案',
@@ -158,26 +166,37 @@ export default function App() {
               <div className="panel-title">{selectedAgent.emoji} {selectedAgent.name}</div>
               <div className="agent-role">{AGENT_ROLES[selectedAgent.id]}</div>
               <div className="agent-task">📌 {AGENT_TASKS[selectedAgent.id]}</div>
+              <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap' }}>
+                {AGENT_TAGS[selectedAgent.id]?.map(tag => (
+                  <span key={tag} className="agent-tag">{tag}</span>
+                ))}
+              </div>
             </div>
             <div className="panel-section">
               <div className="panel-title">最近活动</div>
+              <div className="panel-block">
               {AGENT_ACTIVITIES[selectedAgent.id].map((a, i) => (
                 <div key={i} className="feed-item">
+                  <span className="feed-dot info" />
                   <span className="feed-time">{a.time}</span>
                   <span className="feed-text">{a.action}</span>
                 </div>
               ))}
+              </div>
             </div>
           </>
         ) : (
           <div className="panel-section">
             <div className="panel-title">全局动态</div>
+            <div className="panel-block">
             {GLOBAL_FEED.map((f, i) => (
               <div key={i} className="feed-item">
+                <span className="feed-dot info" />
                 <span className="feed-time">{f.time}</span>
                 <span className="feed-text">{f.agent} {f.action}</span>
               </div>
             ))}
+            </div>
           </div>
         )}
       </aside>

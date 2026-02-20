@@ -165,7 +165,41 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
 .agent-role { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
 .agent-task { font-size: 13px; background: var(--task-bg); padding: 8px; border-radius: 6px; line-height: 1.4; transition: background 0.5s; }
 
-.feed-item { display: flex; gap: 8px; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--feed-border); }
+.feed-item {
+  display: flex; gap: 8px; padding: 8px 10px; font-size: 13px;
+  border-bottom: 1px solid var(--feed-border);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  animation: slide-in-right 0.3s ease-out;
+}
+.feed-item:hover { background: rgba(0, 240, 255, 0.03); }
+
+.feed-dot {
+  width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
+}
+.feed-dot.info { background: #00f0ff; box-shadow: 0 0 6px rgba(0,240,255,0.4); }
+.feed-dot.warn { background: #f0c000; }
+.feed-dot.error { background: #ff2d78; }
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.agent-tag {
+  display: inline-block; padding: 2px 10px; border-radius: 99px;
+  font-size: 11px; font-family: var(--font-mono);
+  background: rgba(0, 240, 255, 0.08); color: #00f0ff;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  margin: 2px 4px 2px 0;
+}
+
+.panel-block {
+  background: rgba(0, 240, 255, 0.02);
+  border-radius: 10px; padding: 12px;
+  border: 1px solid rgba(0, 240, 255, 0.04);
+  margin-bottom: 12px;
+}
 .feed-time { color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); font-size: 11px; min-width: 36px; }
 .feed-text { line-height: 1.4; }
 
