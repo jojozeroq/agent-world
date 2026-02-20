@@ -41,7 +41,6 @@ export function AgentNode({ name, position, phase = 0 }: AgentNodeProps) {
         fontSize={0.22}
         color="#000"
         anchorX="center"
-        font="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjQ.woff2"
       >
         {name}
       </Text>
