@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Sprite } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface AgentNodeProps {
@@ -9,31 +9,54 @@ interface AgentNodeProps {
   emoji: string
   color: string
   position: [number, number, number]
+  phase?: number
 }
 
-export function AgentNode({ name, color, position }: AgentNodeProps) {
+export function AgentNode({ name, color, position, phase = 0 }: AgentNodeProps) {
   const ref = useRef<THREE.Group>(null)
+  const glowRef = useRef<THREE.Sprite>(null)
 
   useFrame(({ clock }) => {
     if (ref.current) {
-      ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.5) * 0.1
+      ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.2 + phase) * 0.15
+    }
+    if (glowRef.current) {
+      glowRef.current.material.opacity = 0.4 + Math.sin(clock.elapsedTime * 2 + phase) * 0.2
     }
   })
 
   return (
     <group ref={ref} position={position}>
-      {/* 简笔画圆形头部 */}
       <mesh>
-        <circleGeometry args={[0.4, 32]} />
-        <meshBasicMaterial color={color} transparent opacity={0.15} />
+        <sphereGeometry args={[0.35, 32, 32]} />
+        <meshPhysicalMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.6}
+          roughness={0.2}
+          metalness={0.3}
+          transparent
+          opacity={0.9}
+        />
       </mesh>
-      <lineLoop>
-        <circleGeometry args={[0.4, 32]} />
-        <lineBasicMaterial color={color} linewidth={2} />
-      </lineLoop>
 
-      {/* 名字 */}
-      <Text position={[0, -0.7, 0]} fontSize={0.25} color="#333" anchorX="center">
+      <Sprite ref={glowRef} scale={[1.8, 1.8, 1]}>
+        <spriteMaterial
+          color={color}
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </Sprite>
+
+      <Text
+        position={[0, -0.65, 0]}
+        fontSize={0.22}
+        color="rgba(255,255,255,0.87)"
+        anchorX="center"
+        font="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjQ.woff2"
+      >
         {name}
       </Text>
     </group>

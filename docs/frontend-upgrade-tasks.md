@@ -40,11 +40,11 @@
 
 ## P2 — 3D 场景升级
 
-### T11: 3D 节点 + 连接线
-- [ ] AgentNode 从 circleGeometry 升级为 SphereGeometry + MeshPhysicalMaterial + emissive
-- [ ] 每个节点外围 Sprite 辉光（径向渐变纹理）
-- [ ] 连接线从直线改为 CatmullRomCurve3 曲线
-- [ ] 连接线上光点流动动画（自定义 shader 或 dash offset）
+### T11: 3D 节点 + 连接线 ✅
+- [x] AgentNode 从 circleGeometry 升级为 SphereGeometry + MeshPhysicalMaterial + emissive
+- [x] 每个节点外围 Sprite 辉光（径向渐变纹理）
+- [x] 连接线从直线改为 CatmullRomCurve3 曲线
+- [x] 连接线上光点流动动画（自定义 shader 或 dash offset）
 - 验收：3D 场景有深度感，节点发光，连接线有能量流动
 
 ### T12: 粒子背景 + 交互增强
