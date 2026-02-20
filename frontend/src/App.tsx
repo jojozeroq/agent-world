@@ -128,7 +128,7 @@ export default function App() {
     <div className="layout">
       <header className="header">
         <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>[MENU]</button>
-        AGENT WORLD / AI COLLABORATION PLATFORM
+        AGENT WORLD<span className="header-sub"> / AI COLLABORATION PLATFORM</span>
       </header>
       <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
         <button className="panel-close" onClick={() => setIsLeftOpen(false)}>[X]</button>
