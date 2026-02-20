@@ -52,7 +52,7 @@ const CONNECTIONS = [
 ]
 
 function ConnectionLine({ start, end, color = '#00f0ff' }: { start: [number,number,number]; end: [number,number,number]; color?: string }) {
-  const ref = useRef<THREE.Line>(null)
+  const ref = useRef<THREE.Line<THREE.BufferGeometry, THREE.LineDashedMaterial>>(null)
 
   const curve = useMemo(() => {
     const mid: [number,number,number] = [
@@ -78,16 +78,15 @@ function ConnectionLine({ start, end, color = '#00f0ff' }: { start: [number,numb
   }, [curve])
 
   useFrame(({ clock }) => {
-    if (ref.current) {
-      const mat = ref.current.material as THREE.LineDashedMaterial
-      mat.dashOffset = -clock.elapsedTime * 0.5
+    if (ref.current?.material) {
+      (ref.current.material as any).dashOffset = -clock.elapsedTime * 0.5
     }
   })
 
   return (
-    <line ref={ref} geometry={geometry}>
+    <primitive object={new THREE.Line(geometry, undefined)} ref={ref}>
       <lineDashedMaterial color={color} transparent opacity={0.3} dashSize={0.3} gapSize={0.2} linewidth={1} />
-    </line>
+    </primitive>
   )
 }
 

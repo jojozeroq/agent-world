@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text, Sprite } from '@react-three/drei'
+import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface AgentNodeProps {
@@ -48,7 +48,7 @@ export function AgentNode({ name, color, position, phase = 0 }: AgentNodeProps) 
         />
       </mesh>
 
-      <Sprite ref={glowRef} scale={[1.8, 1.8, 1]}>
+      <sprite ref={glowRef} scale={[1.8, 1.8, 1]}>
         <spriteMaterial
           color={color}
           transparent
@@ -56,7 +56,7 @@ export function AgentNode({ name, color, position, phase = 0 }: AgentNodeProps) 
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
-      </Sprite>
+      </sprite>
 
       <Text
         position={[0, -0.65, 0]}
