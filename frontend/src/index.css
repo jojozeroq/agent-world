@@ -106,6 +106,16 @@ html, body, #root {
   padding: 8px; margin-bottom: 8px;
 }
 
+.dash-line {
+  font-size: 12px; line-height: 1.6;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  text-transform: uppercase;
+}
+
+.task-queue-item { margin-bottom: 6px; }
+.progress-bar { height: 4px; background: #ccc; margin-top: 2px; }
+.progress-fill { height: 100%; background: #333; }
+
 .feed-item {
   display: flex; gap: 8px; padding: 8px; font-size: 13px;
   border-bottom: 1px solid var(--border);

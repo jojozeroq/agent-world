@@ -49,14 +49,6 @@ const AGENT_ROLES: Record<string, string> = {
   sutang: '用户体验设计师，负责交互设计',
 }
 
-const AGENT_TAGS: Record<string, string[]> = {
-  linzhao: ['协调', '创意', '决策'],
-  moyuan: ['调研', '分析', '评估'],
-  hezhu: ['编码', 'React', 'Three.js'],
-  luzhou: ['管理', '进度', '文档'],
-  sutang: ['设计', 'UX', '交互'],
-}
-
 const AGENT_TASKS: Record<string, string> = {
   linzhao: '正在协调 v2 前端开发任务分配',
   moyuan: '正在调研 WebSocket 实时通信方案',
@@ -94,14 +86,21 @@ const AGENT_ACTIVITIES: Record<string, { time: string; action: string }[]> = {
 }
 
 const GLOBAL_FEED = [
-  { time: '12:45', agent: '何筑💻', action: '提交了布局组件代码' },
-  { time: '12:30', agent: '林昭🌟', action: '发起了 v2 前端设计评审' },
-  { time: '12:20', agent: '墨渊🔬', action: '提交了 WebSocket 方案对比文档' },
-  { time: '12:10', agent: '陆舟📋', action: '更新了 T2 任务状态为已完成' },
-  { time: '11:50', agent: '苏棠🌸', action: '上传了移动端交互原型' },
-  { time: '11:30', agent: '陆舟📋', action: '创建了 T4 任务卡片' },
-  { time: '11:15', agent: '林昭🌟', action: '更新了团队周报' },
-  { time: '11:00', agent: '何筑💻', action: '修复了 CSS Grid 兼容问题' },
+  { time: '12:45', agent: '何筑', action: '提交了布局组件代码' },
+  { time: '12:30', agent: '林昭', action: '发起了 v2 前端设计评审' },
+  { time: '12:20', agent: '墨渊', action: '提交了 WebSocket 方案对比文档' },
+  { time: '12:10', agent: '陆舟', action: '更新了 T2 任务状态为已完成' },
+  { time: '11:50', agent: '苏棠', action: '上传了移动端交互原型' },
+  { time: '11:30', agent: '陆舟', action: '创建了 T4 任务卡片' },
+  { time: '11:15', agent: '林昭', action: '更新了团队周报' },
+  { time: '11:00', agent: '何筑', action: '修复了 CSS Grid 兼容问题' },
+]
+
+const TASK_QUEUE = [
+  { name: 'T18 右侧面板改造', progress: 75 },
+  { name: 'T19 WebSocket 集成', progress: 40 },
+  { name: 'T20 移动端适配', progress: 10 },
+  { name: 'T21 性能优化', progress: 0 },
 ]
 
 const STATUS_LABEL: Record<string, string> = { online: 'ONLINE', idle: 'IDLE', offline: 'OFFLINE' }
@@ -170,42 +169,35 @@ export default function App() {
         {selectedAgent ? (
           <>
             <div className="panel-section">
-              <div className="panel-title">{selectedAgent.emoji} {selectedAgent.name}</div>
-              <div className="agent-role">{AGENT_ROLES[selectedAgent.id]}</div>
-              <div className="agent-task">📌 {AGENT_TASKS[selectedAgent.id]}</div>
-              <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap' }}>
-                {AGENT_TAGS[selectedAgent.id]?.map(tag => (
-                  <span key={tag} className="agent-tag">{tag}</span>
-                ))}
-              </div>
+              <div className="panel-title">▶ AGENT DETAIL</div>
+              <div className="dash-line">ROLE: {AGENT_ROLES[selectedAgent.id]}</div>
+              <div className="dash-line">TASK: {AGENT_TASKS[selectedAgent.id]}</div>
+              <div className="dash-line">STATUS: {STATUS_LABEL[selectedAgent.status]}</div>
             </div>
             <div className="panel-section">
-              <div className="panel-title">最近活动</div>
-              <div className="panel-block">
+              <div className="panel-title">▶ RECENT ACTIVITY</div>
               {AGENT_ACTIVITIES[selectedAgent.id].map((a, i) => (
-                <div key={i} className="feed-item">
-                  <span className="feed-dot info" />
-                  <span className="feed-time">{a.time}</span>
-                  <span className="feed-text">{a.action}</span>
-                </div>
+                <div key={i} className="dash-line">[{a.time}] {a.action}</div>
               ))}
-              </div>
             </div>
           </>
         ) : (
           <div className="panel-section">
-            <div className="panel-title">全局动态</div>
-            <div className="panel-block">
+            <div className="panel-title">▶ ACTIVITY LOG</div>
             {GLOBAL_FEED.map((f, i) => (
-              <div key={i} className="feed-item">
-                <span className="feed-dot info" />
-                <span className="feed-time">{f.time}</span>
-                <span className="feed-text">{f.agent} {f.action}</span>
-              </div>
+              <div key={i} className="dash-line">[{f.time}] {f.agent} — {f.action}</div>
             ))}
-            </div>
           </div>
         )}
+        <div className="panel-section">
+          <div className="panel-title">▶ TASK QUEUE</div>
+          {TASK_QUEUE.map((t, i) => (
+            <div key={i} className="task-queue-item">
+              <div className="dash-line">{t.name} — {t.progress}%</div>
+              <div className="progress-bar"><div className="progress-fill" style={{ width: `${t.progress}%` }} /></div>
+            </div>
+          ))}
+        </div>
       </aside>
       <nav className="nav">
         {TABS.map(t => (
