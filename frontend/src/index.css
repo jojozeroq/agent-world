@@ -16,6 +16,9 @@
   --card-bg: rgba(0, 240, 255, 0.03);
   --task-bg: rgba(0, 240, 255, 0.08);
   --feed-border: rgba(255,255,255,0.06);
+  --font-display: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+  --font-body: 'Inter', 'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 /* Sketch (light) theme */
@@ -41,7 +44,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: system-ui, sans-serif; color: var(--text); background: radial-gradient(ellipse at 20% 50%, #0d1b2a 0%, #0a0e1a 70%); transition: background 0.5s, color 0.5s; }
+html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: var(--font-body); color: var(--text); background: radial-gradient(ellipse at 20% 50%, #0d1b2a 0%, #0a0e1a 70%); transition: background 0.5s, color 0.5s; letter-spacing: 0.02em; }
 [data-theme="sketch"], [data-theme="sketch"] body, [data-theme="sketch"] #root { background: var(--bg); }
 [data-theme="sketch"] .header::after { background: var(--border); animation: none; }
 [data-theme="sketch"] .left-panel, [data-theme="sketch"] .right-panel { backdrop-filter: none; border-color: var(--border); }
@@ -60,6 +63,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: sy
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
   gap: 8px;
@@ -127,7 +131,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: sy
 .nav button:hover { color: var(--text); }
 
 .panel-section { margin-bottom: 20px; }
-.panel-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+.panel-title { font-family: var(--font-display); font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
 
 .agent-item {
   display: flex; align-items: center; gap: 8px;
@@ -142,14 +146,14 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: sy
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .stat-card { background: var(--card-bg); border-radius: 12px; padding: 10px; text-align: center; transition: background 0.3s; border: 1px solid rgba(0, 240, 255, 0.06); }
 .stat-card:hover { background: var(--hover-bg); }
-.stat-value { font-size: 18px; font-weight: 600; color: var(--accent); }
+.stat-value { font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--accent); }
 .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 .agent-role { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
 .agent-task { font-size: 13px; background: var(--task-bg); padding: 8px; border-radius: 6px; line-height: 1.4; transition: background 0.5s; }
 
 .feed-item { display: flex; gap: 8px; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--feed-border); }
-.feed-time { color: var(--text-muted); white-space: nowrap; font-size: 12px; min-width: 36px; }
+.feed-time { color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); font-size: 11px; min-width: 36px; }
 .feed-text { line-height: 1.4; }
 
 .hamburger {
