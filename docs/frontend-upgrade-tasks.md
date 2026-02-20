@@ -56,12 +56,12 @@
 
 ## P3 — 动画 + 打磨
 
-### T13: 微交互动画
-- [ ] 卡片 hover 上浮 2px + 阴影加深
-- [ ] 面板展开/折叠 300ms ease-out
-- [ ] 卡片交错入场 stagger 50ms
-- [ ] 数字变化 countUp 动画
-- [ ] 深色 shimmer 骨架屏
+### T13: 微交互动画 ✅
+- [x] 卡片 hover 上浮 2px + 阴影加深
+- [x] 面板展开/折叠 300ms ease-out
+- [x] 卡片交错入场 stagger 50ms
+- [x] 数字变化 countUp 动画
+- [x] 深色 shimmer 骨架屏
 - 验收：界面有生命力，交互有反馈
 
 ## 技术注意事项

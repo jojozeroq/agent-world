@@ -2,6 +2,27 @@ import { useState, useEffect } from 'react'
 import { AgentWorld } from './scenes/AgentWorld'
 import './index.css'
 
+function useCountUp(target: number, duration = 800) {
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    let start = 0
+    const step = target / (duration / 16)
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) { setValue(target); clearInterval(timer) }
+      else setValue(Math.floor(start))
+    }, 16)
+    return () => clearInterval(timer)
+  }, [target, duration])
+  return value
+}
+
+function AnimatedStat({ value }: { value: number | string }) {
+  const num = useCountUp(typeof value === 'number' ? value : 0)
+  if (typeof value === 'string') return <>{value}</>
+  return <>{num}</>
+}
+
 const TABS = [
   { id: 'world', label: '🌐 世界' },
   { id: 'tasks', label: '📋 任务' },
@@ -149,7 +170,7 @@ export default function App() {
           <div className="stats-grid">
             {STATS.map(s => (
               <div key={s.label} className="stat-card">
-                <div className="stat-value">{s.value}</div>
+                <div className="stat-value"><AnimatedStat value={s.value} /></div>
                 <div className="stat-label">{s.label}</div>
               </div>
             ))}

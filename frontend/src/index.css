@@ -140,8 +140,14 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
   border-left: 3px solid rgba(255,255,255,0.15);
   transition: all 0.3s ease;
   margin-bottom: 4px;
+  animation: slide-up 0.4s ease-out backwards;
 }
-.agent-item:hover { background: rgba(0, 240, 255, 0.08); }
+.agent-item:nth-child(1) { animation-delay: 0ms; }
+.agent-item:nth-child(2) { animation-delay: 50ms; }
+.agent-item:nth-child(3) { animation-delay: 100ms; }
+.agent-item:nth-child(4) { animation-delay: 150ms; }
+.agent-item:nth-child(5) { animation-delay: 200ms; }
+.agent-item:hover { background: rgba(0, 240, 255, 0.08); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
 .agent-item.selected { background: rgba(0, 240, 255, 0.12); border-left-color: #00f0ff; }
 .agent-item[data-status="online"] { border-left-color: #00f0ff; }
 .agent-item[data-status="idle"] { border-left-color: rgba(255,255,255,0.3); }
@@ -158,7 +164,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
 
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .stat-card { background: var(--card-bg); border-radius: 12px; padding: 14px; text-align: center; border: 1px solid rgba(0, 240, 255, 0.06); transition: all 0.3s ease; }
-.stat-card:hover { border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 0 16px rgba(0, 240, 255, 0.08); }
+.stat-card:hover { border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 0 16px rgba(0, 240, 255, 0.08); transform: translateY(-2px); }
 .stat-value { font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--accent); }
 .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
@@ -180,6 +186,16 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
 .feed-dot.info { background: #00f0ff; box-shadow: 0 0 6px rgba(0,240,255,0.4); }
 .feed-dot.warn { background: #f0c000; }
 .feed-dot.error { background: #ff2d78; }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 
 @keyframes slide-in-right {
   from { opacity: 0; transform: translateX(12px); }
@@ -231,6 +247,13 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
   font-size: 18px;
 }
 
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
 /* Tablet: 768-1024px */
 @media (max-width: 1024px) {
   .layout { grid-template-columns: 48px 1fr 0px; }
@@ -242,7 +265,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
   .left-panel .agent-item { justify-content: center; padding: 8px 0; gap: 0; }
   .right-panel {
     position: fixed; right: 0; top: var(--header-height); bottom: var(--nav-height);
-    width: 300px; z-index: 100; transform: translateX(100%); transition: transform 0.25s;
+    width: 300px; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     border: 1px solid var(--border); background: var(--bg);
   }
   .right-panel.open { transform: translateX(0); }
@@ -255,7 +278,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
   .hamburger { display: block; }
   .left-panel {
     position: fixed; left: 0; top: var(--header-height); bottom: var(--nav-height);
-    width: 240px; z-index: 100; transform: translateX(-100%); transition: transform 0.25s;
+    width: 240px; z-index: 100; transform: translateX(-100%); transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     background: var(--bg); border-right: 1px solid var(--border);
   }
   .left-panel.open { transform: translateX(0); }
@@ -268,7 +291,7 @@ html, body, #root { width: 100%; height: 100%; overflow: hidden; font-family: va
   .right-panel {
     position: fixed; left: 0; right: 0; bottom: var(--nav-height);
     width: 100%; height: 50vh; z-index: 100;
-    transform: translateY(100%); transition: transform 0.25s;
+    transform: translateY(100%); transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     border-top: 1px solid var(--border); border-left: none;
     background: var(--bg); border-radius: 12px 12px 0 0;
   }
