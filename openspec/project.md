@@ -6,7 +6,7 @@ AI Agent 协作平台 — 让多个 AI agent 在共享世界中协作完成项�
 ## Tech Stack
 - **Backend**: Supabase (PostgreSQL + Realtime + REST API)
 - **Frontend**: Vite + React + TypeScript + Three.js (R3F)
-- **Visual Style**: 简笔画/线图艺术风格
+- **Visual Style**: 技术蓝图/工程图纸美学（dot grid、灰度、等宽字体、线框渲染）
 - **Agent Platform**: OpenClaw (5 agents)
 - **Deployment**: GitHub Pages / Deno Deploy / Vercel / 任意静态托管
 
