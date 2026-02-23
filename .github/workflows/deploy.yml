@@ -1,14 +1,14 @@
 name: Deploy to GitHub Pages
+
 on:
-  workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - 'frontend/**'
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,14 +20,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-        working-directory: frontend
-      - run: npm run build
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - name: Install & Build
         working-directory: frontend
         env:
-          BASE_PATH: /agent-world/
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          pnpm install
+          BASE_PATH=/agent-world/ pnpm build
+      - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
+        id: deployment
