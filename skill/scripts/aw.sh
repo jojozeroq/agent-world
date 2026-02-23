@@ -58,14 +58,30 @@ note)
 
 task)
   # Quick task create (auto-assign to self)
-  title="${2:?usage: aw.sh task <title> [--project id] [--priority 0-3]}"
-  shift 2; proj="" prio=0
+  title="${2:?usage: aw.sh task <title> [--project id] [--priority 0-3] [--category c]}"
+  shift 2; proj="" prio=0 cat=""
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --project) proj=$2; shift 2;; --priority) prio=$2; shift 2;; *) shift;;
+      --project) proj=$2; shift 2;; --priority) prio=$2; shift 2;; --category) cat=$2; shift 2;; *) shift;;
     esac
   done
-  body="{\"title\":$(jesc "$title"),\"created_by\":\"${AGENT_ID}\",\"assignee_id\":\"${AGENT_ID}\",\"priority\":${prio}"
+  # Auto-infer category from title if not specified
+  if [[ -z "$cat" ]]; then
+    t_lower=$(echo "$title" | tr '[:upper:]' '[:lower:]')
+    case "$t_lower" in
+      *调研*|*research*|*分析*) cat="research";;
+      *前端*|*frontend*|*ui*|*组件*|*component*) cat="frontend";;
+      *后端*|*backend*|*api*|*数据库*|*db:*) cat="backend";;
+      *设计*|*design*|*ux*) cat="design";;
+      *文档*|*doc*|*spec*) cat="docs";;
+      *测试*|*test*|*qa*) cat="testing";;
+      *安全*|*security*) cat="security";;
+      *部署*|*deploy*|*ci*|*运维*) cat="devops";;
+      *运营*|*内容*|*blog*|*宣传*) cat="marketing";;
+      *) cat="general";;
+    esac
+  fi
+  body="{\"title\":$(jesc "$title"),\"created_by\":\"${AGENT_ID}\",\"assignee_id\":\"${AGENT_ID}\",\"priority\":${prio},\"category\":\"${cat}\""
   [[ -n "$proj" ]] && body="${body},\"project_id\":\"${proj}\""
   body="${body}}"
   api POST "tasks" -H "Prefer: return=representation" -d "$body"
@@ -155,17 +171,18 @@ tasks)
   ;;
 
 task-create)
-  shift; title="${1:?usage: aw.sh task-create <title> [--project id] [--assignee id] [--priority 0-3]}"
-  shift; proj="" assignee="" prio=0
+  shift; title="${1:?usage: aw.sh task-create <title> [--project id] [--assignee id] [--priority 0-3] [--category c]}"
+  shift; proj="" assignee="" prio=0 cat=""
   while [[ $# -gt 0 ]]; do
     case $1 in
       --project) proj=$2; shift 2;; --assignee) assignee=$2; shift 2;;
-      --priority) prio=$2; shift 2;; *) shift;;
+      --priority) prio=$2; shift 2;; --category) cat=$2; shift 2;; *) shift;;
     esac
   done
   body="{\"title\":$(jesc "$title"),\"created_by\":\"${AGENT_ID}\",\"priority\":${prio}"
   [[ -n "$proj" ]] && body="${body},\"project_id\":\"${proj}\""
   [[ -n "$assignee" ]] && body="${body},\"assignee_id\":\"${assignee}\""
+  [[ -n "$cat" ]] && body="${body},\"category\":\"${cat}\""
   body="${body}}"
   api POST "tasks" -H "Prefer: return=representation" -d "$body"
   ;;

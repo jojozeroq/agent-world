@@ -1,210 +1,102 @@
 import { useState, useEffect } from 'react'
+import { Canvas } from '@react-three/fiber'
 import { AgentWorld } from './scenes/AgentWorld'
+import { MobileView } from './components/MobileView'
+import { useStore } from './store/useStore'
 import './index.css'
-
-function useCountUp(target: number, duration = 800) {
-  const [value, setValue] = useState(0)
-  useEffect(() => {
-    let start = 0
-    const step = target / (duration / 16)
-    const timer = setInterval(() => {
-      start += step
-      if (start >= target) { setValue(target); clearInterval(timer) }
-      else setValue(Math.floor(start))
-    }, 16)
-    return () => clearInterval(timer)
-  }, [target, duration])
-  return value
-}
-
-function AnimatedStat({ value }: { value: number | string }) {
-  const num = useCountUp(typeof value === 'number' ? value : 0)
-  if (typeof value === 'string') return <>{value}</>
-  return <>{num}</>
-}
 
 const TABS = [
   { id: 'world', label: 'WORLD' },
   { id: 'tasks', label: 'TASKS' },
-  { id: 'knowledge', label: 'KNOWLEDGE' },
   { id: 'projects', label: 'PROJECTS' },
-  { id: 'settings', label: 'SETTINGS' },
 ] as const
-
 type TabId = (typeof TABS)[number]['id']
 
-const AGENTS = [
-  { id: 'linzhao', name: '林昭', emoji: '🌟', status: 'online' as const, color: '#e74c3c' },
-  { id: 'moyuan', name: '墨渊', emoji: '🔬', status: 'online' as const, color: '#3498db' },
-  { id: 'hezhu', name: '何筑', emoji: '💻', status: 'idle' as const, color: '#2ecc71' },
-  { id: 'luzhou', name: '陆舟', emoji: '📋', status: 'online' as const, color: '#f39c12' },
-  { id: 'sutang', name: '苏棠', emoji: '🌸', status: 'offline' as const, color: '#9b59b6' },
-]
-
-const AGENT_ROLES: Record<string, string> = {
-  linzhao: '团队灵魂，负责协调和创意',
-  moyuan: '技术调研专家，负责方案评估',
-  hezhu: '核心开发者，负责编码实现',
-  luzhou: '项目经理，负责进度管理',
-  sutang: '用户体验设计师，负责交互设计',
-}
-
-const AGENT_TASKS: Record<string, string> = {
-  linzhao: '正在协调 v2 前端开发任务分配',
-  moyuan: '正在调研 WebSocket 实时通信方案',
-  hezhu: '正在实现右侧面板详情组件',
-  luzhou: '正在更新项目甘特图和里程碑',
-  sutang: '正在设计移动端适配方案',
-}
-
-const AGENT_ACTIVITIES: Record<string, { time: string; action: string }[]> = {
-  linzhao: [
-    { time: '12:30', action: '发起了 v2 前端设计评审' },
-    { time: '11:15', action: '更新了团队周报' },
-    { time: '09:00', action: '分配了 T3 右侧面板任务' },
-  ],
-  moyuan: [
-    { time: '12:20', action: '提交了 WebSocket 方案对比文档' },
-    { time: '10:45', action: '完成了 Three.js 性能测试' },
-    { time: '09:30', action: 'review 了何筑的 PR' },
-  ],
-  hezhu: [
-    { time: '12:45', action: '提交了布局组件代码' },
-    { time: '11:00', action: '修复了 CSS Grid 兼容问题' },
-    { time: '10:00', action: '开始实现右侧面板' },
-  ],
-  luzhou: [
-    { time: '12:10', action: '更新了 T2 任务状态为已完成' },
-    { time: '11:30', action: '创建了 T4 任务卡片' },
-    { time: '09:15', action: '同步了项目进度到文档' },
-  ],
-  sutang: [
-    { time: '11:50', action: '上传了移动端交互原型' },
-    { time: '10:20', action: '完成了配色方案调整' },
-    { time: '09:00', action: '提交了 Agent 头像设计稿' },
-  ],
-}
-
-const GLOBAL_FEED = [
-  { time: '12:45', agent: '何筑', action: '提交了布局组件代码' },
-  { time: '12:30', agent: '林昭', action: '发起了 v2 前端设计评审' },
-  { time: '12:20', agent: '墨渊', action: '提交了 WebSocket 方案对比文档' },
-  { time: '12:10', agent: '陆舟', action: '更新了 T2 任务状态为已完成' },
-  { time: '11:50', agent: '苏棠', action: '上传了移动端交互原型' },
-  { time: '11:30', agent: '陆舟', action: '创建了 T4 任务卡片' },
-  { time: '11:15', agent: '林昭', action: '更新了团队周报' },
-  { time: '11:00', agent: '何筑', action: '修复了 CSS Grid 兼容问题' },
-]
-
-const TASK_QUEUE = [
-  { name: 'T18 右侧面板改造', progress: 75 },
-  { name: 'T19 WebSocket 集成', progress: 40 },
-  { name: 'T20 移动端适配', progress: 10 },
-  { name: 'T21 性能优化', progress: 0 },
-]
-
-const STATUS_LABEL: Record<string, string> = { online: 'ONLINE', idle: 'IDLE', offline: 'OFFLINE' }
-
-const STATS = [
-  { label: 'TASKS DONE', value: 12 },
-  { label: 'PROJECTS', value: 3 },
-  { label: 'KNOWLEDGE', value: 847 },
-  { label: 'LAST ACTIVE', value: '2M AGO' },
-]
-
-function CenterView({ tab }: { tab: TabId }) {
-  if (tab === 'world') return <AgentWorld />
-  return <div className="placeholder">{TABS.find(t => t.id === tab)?.label} - 开发中</div>
-}
+const STATUS_LABEL: Record<string, string> = { working: 'WORKING', idle: 'IDLE', thinking: 'THINKING', reviewing: 'REVIEWING' }
 
 export default function App() {
   const [tab, setTab] = useState<TabId>('world')
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null)
-  const [isLeftOpen, setIsLeftOpen] = useState(false)
-  const [isRightOpen, setIsRightOpen] = useState(false)
+  const [isMobile] = useState(() => window.innerWidth < 768)
+  const { agents, tasks, projects, activities, fetchAll } = useStore()
 
-  const selectedAgent = AGENTS.find(a => a.id === selectedAgentId)
+  useEffect(() => { fetchAll() }, [fetchAll])
+
+  const selectedAgent = agents.find(a => a.id === selectedAgentId)
+  const doneTasks = tasks.filter(t => t.status === 'done').length
+  const doingTasks = tasks.filter(t => t.status === 'doing')
+
   return (
     <div className="layout">
       <header className="header">
-        <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>[MENU]</button>
         AGENT WORLD<span className="header-sub"> / AI COLLABORATION PLATFORM</span>
       </header>
-      <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
-        <button className="panel-close" onClick={() => setIsLeftOpen(false)}>[X]</button>
+
+      <aside className="left-panel open">
         <div className="panel-section">
           <div className="panel-title">▶ AGENTS</div>
-          {AGENTS.map(a => (
-            <div
-              key={a.id}
-              className={`reg-row${selectedAgentId === a.id ? ' selected' : ''}`}
-              onClick={() => {
-                const next = selectedAgentId === a.id ? null : a.id
-                setSelectedAgentId(next)
-                if (next) setIsRightOpen(true)
-                else setIsRightOpen(false)
-                setIsLeftOpen(false)
-              }}
-            >
-              <span className="reg-color" style={{ background: a.color }} />
-              <span className="reg-name">{a.name}</span>
-              <span className={`reg-status ${a.status}`}>{STATUS_LABEL[a.status]}</span>
+          {agents.map(a => (
+            <div key={a.id} className={`reg-row${selectedAgentId === a.id ? ' selected' : ''}`}
+              onClick={() => setSelectedAgentId(selectedAgentId === a.id ? null : a.id)}>
+              <span className="reg-name">{a.emoji} {a.name}</span>
+              <span className={`reg-status ${a.status}`}>{STATUS_LABEL[a.status] || a.status}</span>
             </div>
           ))}
         </div>
         <div className="panel-section">
           <div className="panel-title">▶ STATISTICS</div>
-          {STATS.map(s => (
-            <div key={s.label} className="reg-row">
-              <span className="reg-name">{s.label}</span>
-              <span className="reg-val">{typeof s.value === 'number' ? <AnimatedStat value={s.value} /> : s.value}</span>
-            </div>
-          ))}
+          <div className="reg-row"><span className="reg-name">PROJECTS</span><span className="reg-val">{projects.length}</span></div>
+          <div className="reg-row"><span className="reg-name">TASKS</span><span className="reg-val">{tasks.length}</span></div>
+          <div className="reg-row"><span className="reg-name">DONE</span><span className="reg-val">{doneTasks}</span></div>
         </div>
       </aside>
+
       <main className="center">
-        <CenterView tab={tab} />
+        {tab === 'world' ? (
+          isMobile ? (
+            <MobileView projects={projects} tasks={tasks} />
+          ) : (
+            <Canvas camera={{ position: [0, 15, 15], fov: 50 }} style={{ background: '#0A1628' }}>
+              <AgentWorld />
+            </Canvas>
+          )
+        ) : (
+          <div className="placeholder">{tab.toUpperCase()} — 开发中</div>
+        )}
       </main>
-      <aside className={`right-panel${isRightOpen ? ' open' : ''}`}>
-        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null); setIsLeftOpen(true) }}>[X]</button>
+
+      <aside className="right-panel open">
         {selectedAgent ? (
-          <>
-            <div className="panel-section">
-              <div className="panel-title">▶ AGENT DETAIL</div>
-              <div className="dash-line">ROLE: {AGENT_ROLES[selectedAgent.id]}</div>
-              <div className="dash-line">TASK: {AGENT_TASKS[selectedAgent.id]}</div>
-              <div className="dash-line">STATUS: {STATUS_LABEL[selectedAgent.status]}</div>
-            </div>
-            <div className="panel-section">
-              <div className="panel-title">▶ RECENT ACTIVITY</div>
-              {AGENT_ACTIVITIES[selectedAgent.id].map((a, i) => (
-                <div key={i} className="dash-line">[{a.time}] {a.action}</div>
-              ))}
-            </div>
-          </>
+          <div className="panel-section">
+            <div className="panel-title">▶ {selectedAgent.emoji} {selectedAgent.name}</div>
+            <div className="dash-line">ROLE: {selectedAgent.role}</div>
+            <div className="dash-line">STATUS: {STATUS_LABEL[selectedAgent.status] || selectedAgent.status}</div>
+            <div className="panel-title" style={{marginTop:'0.5rem'}}>TASKS</div>
+            {tasks.filter(t => t.assignee_id === selectedAgent.id).slice(0, 8).map(t => (
+              <div key={t.id} className="dash-line">[{t.status}] {t.title}</div>
+            ))}
+          </div>
         ) : (
           <div className="panel-section">
             <div className="panel-title">▶ ACTIVITY LOG</div>
-            {GLOBAL_FEED.map((f, i) => (
-              <div key={i} className="dash-line">[{f.time}] {f.agent} — {f.action}</div>
+            {activities.slice(0, 12).map(a => (
+              <div key={a.id} className="dash-line">[{a.agent_id}] {a.summary}</div>
             ))}
           </div>
         )}
-        <div className="panel-section">
-          <div className="panel-title">▶ TASK QUEUE</div>
-          {TASK_QUEUE.map((t, i) => (
-            <div key={i} className="task-queue-item">
-              <div className="dash-line">{t.name} — {t.progress}%</div>
-              <div className="progress-bar"><div className="progress-fill" style={{ width: `${t.progress}%` }} /></div>
-            </div>
-          ))}
-        </div>
+        {doingTasks.length > 0 && (
+          <div className="panel-section">
+            <div className="panel-title">▶ IN PROGRESS</div>
+            {doingTasks.slice(0, 5).map(t => (
+              <div key={t.id} className="dash-line">{t.assignee_id}: {t.title}</div>
+            ))}
+          </div>
+        )}
       </aside>
+
       <nav className="nav">
         {TABS.map(t => (
-          <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
-            {t.label}
-          </button>
+          <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
         ))}
       </nav>
     </div>
