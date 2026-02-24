@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Text } from '@react-three/drei'
 import type { Project } from '../types'
@@ -26,6 +26,7 @@ function createFlatTopHexShape(radius: number) {
 }
 
 export function CentralTower({ project, maxHeight, onSelect }: CentralTowerProps) {
+  const [hovered, setHovered] = useState(false)
   const height = maxHeight + FLOOR_HEIGHT
   const [edges, geo] = useMemo(() => {
     const shape = createFlatTopHexShape(HEX_RADIUS)
@@ -36,11 +37,23 @@ export function CentralTower({ project, maxHeight, onSelect }: CentralTowerProps
   return (
     <group>
       <group rotation={[-Math.PI / 2, 0, 0]}>
-        <mesh geometry={geo as any} onClick={onSelect}>
+        <mesh
+          geometry={geo as any}
+          onClick={onSelect}
+          onPointerOver={(e) => {
+            e.stopPropagation()
+            setHovered(true)
+            document.body.style.cursor = 'pointer'
+          }}
+          onPointerOut={() => {
+            setHovered(false)
+            document.body.style.cursor = 'default'
+          }}
+        >
           <meshBasicMaterial color={project.color} transparent opacity={0.2} />
         </mesh>
-        <lineSegments geometry={edges as any} onClick={onSelect}>
-          <lineBasicMaterial color="#333333" opacity={0.9} transparent />
+        <lineSegments geometry={edges as any}>
+          <lineBasicMaterial color={hovered ? '#666666' : '#333333'} opacity={0.9} transparent />
         </lineSegments>
       </group>
       <Text

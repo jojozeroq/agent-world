@@ -23,7 +23,7 @@ const DEFAULT_CATEGORIES = [
   { id: 'backend', label: '后端' },
   { id: 'design', label: '设计' },
   { id: 'docs', label: '文档' },
-  { id: 'testing', label: '测试' },
+  { id: 'general', label: '其他' },
 ]
 
 function createFlatTopHexShape(radius: number) {
@@ -53,10 +53,14 @@ export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTo
 
   const tasksByCategory = useMemo(() => {
     const map = new Map<string, Task[]>()
+    const defaultCatIds = new Set(DEFAULT_CATEGORIES.map(c => c.id))
+
     tasks.forEach(t => {
       const c = t.category || 'general'
-      if (!map.has(c)) map.set(c, [])
-      map.get(c)!.push(t)
+      // Map non-default categories to 'general'
+      const category = defaultCatIds.has(c) ? c : 'general'
+      if (!map.has(category)) map.set(category, [])
+      map.get(category)!.push(t)
     })
     return map
   }, [tasks])
