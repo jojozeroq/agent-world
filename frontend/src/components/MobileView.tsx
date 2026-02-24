@@ -10,7 +10,7 @@ export function MobileView({ projects, tasks }: MobileViewProps) {
   const [selected, setSelected] = useState<string | null>(null)
 
   return (
-    <div style={{ width: '100%', height: '100%', overflow: 'auto', background: '#0A1628', padding: '1rem' }}>
+    <div style={{ width: '100%', height: '100%', overflow: 'auto', padding: '1rem' }}>
       <svg viewBox="0 0 300 400" style={{ width: '100%', maxWidth: '400px', margin: '0 auto', display: 'block' }}>
         {projects.map((p, i) => {
           const x = 150 + (i % 2 === 0 ? -60 : 60)
