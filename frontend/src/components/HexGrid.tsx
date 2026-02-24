@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Building } from './Building'
 import { CentralTower } from './CentralTower'
@@ -41,19 +41,20 @@ function createFlatTopHexShape(radius: number) {
 
 // Flat-top hex: edge-to-edge touching positions for ring 1
 function hexRing1(radius: number): [number, number][] {
-  const w = radius * 2       // flat-top width
-  const h = radius * Math.sqrt(3) // flat-top height
+  const sqrt3 = Math.sqrt(3)
   return [
-    [w * 0.75, h * 0.5],   // right-up
-    [0, h],                  // up
-    [-w * 0.75, h * 0.5],  // left-up
-    [-w * 0.75, -h * 0.5], // left-down
-    [0, -h],                 // down
-    [w * 0.75, -h * 0.5],  // right-down
+    [1.5 * radius, sqrt3 / 2 * radius],   // right-up
+    [0, sqrt3 * radius],                   // up
+    [-1.5 * radius, sqrt3 / 2 * radius],  // left-up
+    [-1.5 * radius, -sqrt3 / 2 * radius], // left-down
+    [0, -sqrt3 * radius],                  // down
+    [1.5 * radius, -sqrt3 / 2 * radius],  // right-down
   ]
 }
 
 export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTowerClick }: HexGridProps) {
+  const [hoveredCat, setHoveredCat] = useState<string | null>(null)
+
   const tasksByCategory = useMemo(() => {
     const map = new Map<string, Task[]>()
     tasks.forEach(t => {
@@ -100,14 +101,23 @@ export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTo
             <group rotation={[-Math.PI / 2, 0, 0]}>
               <mesh
                 geometry={hexGeo as any}
-                onPointerOver={(e) => { e.stopPropagation(); onHexHover?.(cat.id) }}
-                onPointerOut={() => onHexHover?.(null)}
+                onPointerOver={(e) => {
+                  e.stopPropagation()
+                  setHoveredCat(cat.id)
+                  document.body.style.cursor = 'pointer'
+                  onHexHover?.(cat.id)
+                }}
+                onPointerOut={() => {
+                  setHoveredCat(null)
+                  document.body.style.cursor = 'default'
+                  onHexHover?.(null)
+                }}
                 onClick={(e) => { e.stopPropagation(); onHexClick?.(cat.id) }}
               >
                 <meshBasicMaterial color={project.color} transparent opacity={catTasks.length > 0 ? 0.15 : 0.05} />
               </mesh>
               <lineSegments geometry={edgesGeo as any}>
-                <lineBasicMaterial color="#333333" />
+                <lineBasicMaterial color={hoveredCat === cat.id ? '#666666' : '#333333'} />
               </lineSegments>
             </group>
             {/* Category label */}

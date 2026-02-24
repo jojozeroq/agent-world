@@ -38,8 +38,12 @@ export default function App() {
 
   // Open right panel when 3D object clicked
   useEffect(() => {
-    if (selectedProject) { setIsRightOpen(true); setSelectedAgentId(null) }
-  }, [selectedProject])
+    if (selectedProject) {
+      setIsRightOpen(true)
+      setSelectedAgentId(null)
+      if (isMobile) setIsLeftOpen(false)
+    }
+  }, [selectedProject, isMobile])
 
   return (
     <div className="layout">
