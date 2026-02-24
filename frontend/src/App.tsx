@@ -17,6 +17,8 @@ const STATUS_LABEL: Record<string, string> = { working: 'WORKING', idle: 'IDLE',
 export default function App() {
   const [tab, setTab] = useState<TabId>('world')
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null)
+  const [isLeftOpen, setIsLeftOpen] = useState(false)
+  const [isRightOpen, setIsRightOpen] = useState(false)
   const [isMobile] = useState(() => window.innerWidth < 768)
   const { agents, tasks, projects, activities, fetchAll } = useStore()
 
@@ -29,15 +31,23 @@ export default function App() {
   return (
     <div className="layout">
       <header className="header">
+        <button className="hamburger" onClick={() => setIsLeftOpen(v => !v)}>[MENU]</button>
         AGENT WORLD<span className="header-sub"> / AI COLLABORATION PLATFORM</span>
       </header>
 
-      <aside className="left-panel open">
+      <aside className={`left-panel${isLeftOpen ? ' open' : ''}`}>
+        <button className="panel-close" onClick={() => setIsLeftOpen(false)}>[X]</button>
         <div className="panel-section">
           <div className="panel-title">▶ AGENTS</div>
           {agents.map(a => (
             <div key={a.id} className={`reg-row${selectedAgentId === a.id ? ' selected' : ''}`}
-              onClick={() => setSelectedAgentId(selectedAgentId === a.id ? null : a.id)}>
+              onClick={() => {
+                const next = selectedAgentId === a.id ? null : a.id
+                setSelectedAgentId(next)
+                if (next) setIsRightOpen(true)
+                else setIsRightOpen(false)
+                setIsLeftOpen(false)
+              }}>
               <span className="reg-name">{a.emoji} {a.name}</span>
               <span className={`reg-status ${a.status}`}>{STATUS_LABEL[a.status] || a.status}</span>
             </div>
@@ -65,7 +75,8 @@ export default function App() {
         )}
       </main>
 
-      <aside className="right-panel open">
+      <aside className={`right-panel${isRightOpen ? ' open' : ''}`}>
+        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null) }}>[X]</button>
         {selectedAgent ? (
           <div className="panel-section">
             <div className="panel-title">▶ {selectedAgent.emoji} {selectedAgent.name}</div>
