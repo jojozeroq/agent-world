@@ -28,28 +28,29 @@ function createFlatTopHexShape(radius: number) {
 const sharedShape = createFlatTopHexShape(HEX_RADIUS)
 
 function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
-  const ref = useRef<THREE.LineSegments>(null)
-  const edges = useMemo(() => {
-    const geo = new THREE.ExtrudeGeometry(sharedShape, { depth: FLOOR_HEIGHT, bevelEnabled: false })
-    return new THREE.EdgesGeometry(geo)
+  const lineRef = useRef<THREE.LineSegments>(null)
+  const [edges, geo] = useMemo(() => {
+    const g = new THREE.ExtrudeGeometry(sharedShape, { depth: FLOOR_HEIGHT, bevelEnabled: false })
+    return [new THREE.EdgesGeometry(g), g]
   }, [])
 
   useFrame(({ clock }) => {
-    if (!ref.current) return
-    const mat = ref.current.material as THREE.LineBasicMaterial
+    if (!lineRef.current) return
+    const mat = lineRef.current.material as THREE.LineBasicMaterial
     if (task.status === 'doing') {
       mat.opacity = 0.5 + Math.sin(clock.elapsedTime * 3) * 0.3
-    } else if (task.status === 'review') {
-      mat.color.setHex(Math.sin(clock.elapsedTime * 5) > 0 ? 0xffaa00 : parseInt(color.slice(1), 16))
     }
   })
 
-  const opacity = task.status === 'todo' ? 0.3 : task.status === 'done' ? 1 : 0.7
+  const lineOpacity = task.status === 'todo' ? 0.3 : task.status === 'done' ? 1 : 0.7
 
   return (
     <group position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <lineSegments ref={ref} geometry={edges as any}>
-        <lineBasicMaterial color={color} transparent opacity={opacity} />
+      <mesh geometry={geo as any}>
+        <meshBasicMaterial color={color} transparent opacity={0.2} />
+      </mesh>
+      <lineSegments ref={lineRef} geometry={edges as any}>
+        <lineBasicMaterial color="#333333" transparent opacity={lineOpacity} />
       </lineSegments>
     </group>
   )

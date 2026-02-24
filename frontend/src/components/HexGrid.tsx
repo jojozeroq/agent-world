@@ -87,13 +87,16 @@ export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTo
         return (
           <group key={category} position={[pos[0], 0, pos[1]]}>
             <group rotation={[-Math.PI / 2, 0, 0]}>
-              <lineSegments
-                geometry={edgesGeo as any}
+              <mesh
+                geometry={hexGeo as any}
                 onPointerOver={() => onHexHover?.(category)}
                 onPointerOut={() => onHexHover?.(null)}
                 onClick={() => onHexClick?.(category)}
               >
-                <lineBasicMaterial color={project.color} />
+                <meshBasicMaterial color={project.color} transparent opacity={0.2} />
+              </mesh>
+              <lineSegments geometry={edgesGeo as any}>
+                <lineBasicMaterial color="#333333" />
               </lineSegments>
             </group>
             <Building tasks={catTasks} color={project.color} position={[0, 0.08, 0]} />

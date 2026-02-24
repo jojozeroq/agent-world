@@ -23,11 +23,11 @@ function createFlatTopHexShape(radius: number) {
 }
 
 export function BridgeHex({ projectA, projectB, hasRelation, position }: BridgeHexProps) {
-  const color = useMemo(() => {
+  const fillColor = useMemo(() => {
     if (!hasRelation) return '#444444'
     const colorA = new THREE.Color(projectA.color)
     const colorB = new THREE.Color(projectB.color)
-    return colorA.lerp(colorB, 0.5).getHexString()
+    return '#' + colorA.lerp(colorB, 0.5).getHexString()
   }, [projectA.color, projectB.color, hasRelation])
 
   const hexShape = useMemo(() => createFlatTopHexShape(0.8), [])
@@ -37,8 +37,11 @@ export function BridgeHex({ projectA, projectB, hasRelation, position }: BridgeH
   return (
     <group position={position}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh geometry={hexGeo as any}>
+          <meshBasicMaterial color={fillColor} transparent opacity={0.2} />
+        </mesh>
         <lineSegments geometry={edgesGeo as any}>
-          <lineBasicMaterial color={`#${color}`} />
+          <lineBasicMaterial color="#333333" />
         </lineSegments>
       </group>
     </group>

@@ -27,17 +27,20 @@ function createFlatTopHexShape(radius: number) {
 
 export function CentralTower({ project, maxHeight, onSelect }: CentralTowerProps) {
   const height = maxHeight + FLOOR_HEIGHT
-  const edges = useMemo(() => {
+  const [edges, geo] = useMemo(() => {
     const shape = createFlatTopHexShape(HEX_RADIUS)
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false })
-    return new THREE.EdgesGeometry(geo)
+    const g = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false })
+    return [new THREE.EdgesGeometry(g), g]
   }, [height])
 
   return (
     <group>
       <group rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh geometry={geo as any} onClick={onSelect}>
+          <meshBasicMaterial color={project.color} transparent opacity={0.2} />
+        </mesh>
         <lineSegments geometry={edges as any} onClick={onSelect}>
-          <lineBasicMaterial color={project.color} opacity={0.9} transparent />
+          <lineBasicMaterial color="#333333" opacity={0.9} transparent />
         </lineSegments>
       </group>
       <Text
