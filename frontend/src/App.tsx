@@ -20,13 +20,26 @@ export default function App() {
   const [isLeftOpen, setIsLeftOpen] = useState(false)
   const [isRightOpen, setIsRightOpen] = useState(false)
   const [isMobile] = useState(() => window.innerWidth < 768)
-  const { agents, tasks, projects, activities, fetchAll } = useStore()
+  const { agents, tasks, projects, activities, fetchAll, selectedProject, setSelectedProject } = useStore()
 
   useEffect(() => { fetchAll() }, [fetchAll])
 
   const selectedAgent = agents.find(a => a.id === selectedAgentId)
   const doneTasks = tasks.filter(t => t.status === 'done').length
   const doingTasks = tasks.filter(t => t.status === 'doing')
+
+  // Parse 3D scene selection: "projectId" or "projectId:category"
+  const selectedProjId = selectedProject?.split(':')[0] || null
+  const selectedCategory = selectedProject?.split(':')[1] || null
+  const selectedProjData = projects.find(p => p.id === selectedProjId)
+  const selectedCatTasks = selectedProjId
+    ? tasks.filter(t => t.project_id === selectedProjId && (!selectedCategory || t.category === selectedCategory))
+    : []
+
+  // Open right panel when 3D object clicked
+  useEffect(() => {
+    if (selectedProject) { setIsRightOpen(true); setSelectedAgentId(null) }
+  }, [selectedProject])
 
   return (
     <div className="layout">
@@ -76,7 +89,7 @@ export default function App() {
       </main>
 
       <aside className={`right-panel${isRightOpen ? ' open' : ''}`}>
-        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null); setIsLeftOpen(true) }}>[X]</button>
+        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null); setSelectedProject(null); setIsLeftOpen(true) }}>[X]</button>
         {selectedAgent ? (
           <div className="panel-section">
             <div className="panel-title">▶ {selectedAgent.emoji} {selectedAgent.name}</div>
@@ -84,6 +97,16 @@ export default function App() {
             <div className="dash-line">STATUS: {STATUS_LABEL[selectedAgent.status] || selectedAgent.status}</div>
             <div className="panel-title" style={{marginTop:'0.5rem'}}>TASKS</div>
             {tasks.filter(t => t.assignee_id === selectedAgent.id).slice(0, 8).map(t => (
+              <div key={t.id} className="dash-line">[{t.status}] {t.title}</div>
+            ))}
+          </div>
+        ) : selectedProjData ? (
+          <div className="panel-section">
+            <div className="panel-title">▶ {selectedProjData.name}{selectedCategory ? ` / ${selectedCategory}` : ''}</div>
+            <div className="dash-line">STATUS: {selectedProjData.status}</div>
+            <div className="dash-line">TASKS: {selectedCatTasks.length}</div>
+            <div className="panel-title" style={{marginTop:'0.5rem'}}>TASK LIST</div>
+            {selectedCatTasks.slice(0, 12).map(t => (
               <div key={t.id} className="dash-line">[{t.status}] {t.title}</div>
             ))}
           </div>

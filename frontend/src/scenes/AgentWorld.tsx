@@ -4,11 +4,10 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { BlueprintBackground } from '../components/BlueprintBackground'
 import { HexGrid } from '../components/HexGrid'
 import { AgentOrbs } from '../components/AgentOrbs'
-import { BridgeHex } from '../components/BridgeHex'
 import { useStore } from '../store/useStore'
 
 export function AgentWorld() {
-  const { projects, tasks, agents, activities, relations, subscribe } = useStore()
+  const { projects, tasks, agents, activities, subscribe, setSelectedProject, setHoveredHex } = useStore()
 
   useEffect(() => {
     const unsub = subscribe()
@@ -22,27 +21,6 @@ export function AgentWorld() {
     }))
   }, [projects, tasks])
 
-  const bridges = useMemo(() => {
-    const result: Array<{ projectA: typeof projects[0], projectB: typeof projects[0], hasRelation: boolean, position: [number, number, number] }> = []
-    for (let i = 0; i < projects.length; i++) {
-      const x1 = (i % 3) * 12 - 12
-      const z1 = Math.floor(i / 3) * 12 - 6
-      if (i % 3 < 2) {
-        const j = i + 1
-        if (j < projects.length) {
-          const x2 = (j % 3) * 12 - 12
-          const z2 = Math.floor(j / 3) * 12 - 6
-          const hasRelation = relations.some(r =>
-            (r.project_a_id === projects[i].id && r.project_b_id === projects[j].id) ||
-            (r.project_a_id === projects[j].id && r.project_b_id === projects[i].id)
-          )
-          result.push({ projectA: projects[i], projectB: projects[j], hasRelation, position: [(x1 + x2) / 2, 0, (z1 + z2) / 2] })
-        }
-      }
-    }
-    return result
-  }, [projects, relations])
-
   return (
     <>
       <BlueprintBackground />
@@ -55,12 +33,12 @@ export function AgentWorld() {
             project={project}
             tasks={project.tasks}
             position={[x, 0, z]}
+            onHexClick={(cat) => setSelectedProject(`${project.id}:${cat}`)}
+            onHexHover={(cat) => setHoveredHex(cat ? `${project.id}:${cat}` : null)}
+            onTowerClick={() => setSelectedProject(project.id)}
           />
         )
       })}
-      {bridges.map((b, i) => (
-        <BridgeHex key={i} projectA={b.projectA} projectB={b.projectB} hasRelation={b.hasRelation} position={b.position} />
-      ))}
       <AgentOrbs agents={agents} activities={activities} tasks={tasks} />
       <OrbitControls enableDamping dampingFactor={0.08} />
       <EffectComposer>
