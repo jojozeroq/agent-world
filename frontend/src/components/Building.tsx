@@ -48,10 +48,7 @@ function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
 
   return (
     <group position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <mesh geometry={geo as any}
-        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }}
-        onPointerOut={() => { document.body.style.cursor = 'default' }}
-      >
+      <mesh geometry={geo as any}>
         <meshBasicMaterial color={color} transparent opacity={0.2} />
       </mesh>
       <lineSegments ref={lineRef} geometry={edges as any}>
