@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { Task } from '../types'
@@ -12,10 +12,10 @@ interface BuildingProps {
 const FLOOR_HEIGHT = 0.3
 const HEX_RADIUS = 0.8
 
-function createHexShape(radius: number) {
+function createFlatTopHexShape(radius: number) {
   const shape = new THREE.Shape()
   for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i
+    const angle = (Math.PI / 3) * i + Math.PI / 6
     const x = radius * Math.cos(angle)
     const y = radius * Math.sin(angle)
     if (i === 0) shape.moveTo(x, y)
@@ -25,11 +25,14 @@ function createHexShape(radius: number) {
   return shape
 }
 
+const sharedShape = createFlatTopHexShape(HEX_RADIUS)
+
 function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
   const ref = useRef<THREE.LineSegments>(null)
-  const shape = createHexShape(HEX_RADIUS)
-  const geo = new THREE.ExtrudeGeometry(shape, { depth: FLOOR_HEIGHT, bevelEnabled: false })
-  const edges = new THREE.EdgesGeometry(geo)
+  const edges = useMemo(() => {
+    const geo = new THREE.ExtrudeGeometry(sharedShape, { depth: FLOOR_HEIGHT, bevelEnabled: false })
+    return new THREE.EdgesGeometry(geo)
+  }, [])
 
   useFrame(({ clock }) => {
     if (!ref.current) return
@@ -41,24 +44,19 @@ function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
     }
   })
 
-  const isDashed = task.status === 'todo'
   const opacity = task.status === 'todo' ? 0.3 : task.status === 'done' ? 1 : 0.7
 
   return (
-    <lineSegments ref={ref} geometry={edges} position={[0, y, 0]}>
-      <lineBasicMaterial
-        color={color}
-        transparent
-        opacity={opacity}
-        {...(isDashed && { dashSize: 0.1, gapSize: 0.05 })}
-      />
-    </lineSegments>
+    <group position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <lineSegments ref={ref} geometry={edges as any}>
+        <lineBasicMaterial color={color} transparent opacity={opacity} />
+      </lineSegments>
+    </group>
   )
 }
 
 export function Building({ tasks, color, position }: BuildingProps) {
   const sorted = [...tasks].sort((a, b) => b.priority - a.priority)
-
   return (
     <group position={position}>
       {sorted.map((task, i) => (

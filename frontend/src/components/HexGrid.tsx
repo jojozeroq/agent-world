@@ -88,7 +88,7 @@ export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTo
           <group key={category} position={[pos[0], 0, pos[1]]}>
             <group rotation={[-Math.PI / 2, 0, 0]}>
               <lineSegments
-                geometry={edgesGeo}
+                geometry={edgesGeo as any}
                 onPointerOver={() => onHexHover?.(category)}
                 onPointerOut={() => onHexHover?.(null)}
                 onClick={() => onHexClick?.(category)}

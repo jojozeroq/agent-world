@@ -56,7 +56,7 @@ export default function App() {
           isMobile ? (
             <MobileView projects={projects} tasks={tasks} />
           ) : (
-            <Canvas camera={{ position: [0, 15, 15], fov: 50 }} style={{ background: '#0A1628' }}>
+            <Canvas camera={{ position: [0, 15, 15], fov: 50 }} style={{ background: 'transparent' }}>
               <AgentWorld />
             </Canvas>
           )

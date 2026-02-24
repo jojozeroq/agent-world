@@ -37,7 +37,7 @@ export function BridgeHex({ projectA, projectB, hasRelation, position }: BridgeH
   return (
     <group position={position}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
-        <lineSegments geometry={edgesGeo}>
+        <lineSegments geometry={edgesGeo as any}>
           <lineBasicMaterial color={`#${color}`} />
         </lineSegments>
       </group>

@@ -10,9 +10,9 @@ interface CentralTowerProps {
 }
 
 const FLOOR_HEIGHT = 0.3
-const HEX_RADIUS = 0.8
+const HEX_RADIUS = 0.9
 
-function createHexShape(radius: number) {
+function createFlatTopHexShape(radius: number) {
   const shape = new THREE.Shape()
   for (let i = 0; i < 6; i++) {
     const angle = (Math.PI / 3) * i + Math.PI / 6
@@ -27,18 +27,22 @@ function createHexShape(radius: number) {
 
 export function CentralTower({ project, maxHeight, onSelect }: CentralTowerProps) {
   const height = maxHeight + FLOOR_HEIGHT
-  const shape = useMemo(() => createHexShape(HEX_RADIUS), [])
-  const geo = useMemo(() => new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false }), [shape, height])
-  const edges = useMemo(() => new THREE.EdgesGeometry(geo), [geo])
+  const edges = useMemo(() => {
+    const shape = createFlatTopHexShape(HEX_RADIUS)
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false })
+    return new THREE.EdgesGeometry(geo)
+  }, [height])
 
   return (
     <group>
-      <lineSegments geometry={edges} onClick={onSelect}>
-        <lineBasicMaterial color={project.color} opacity={0.9} transparent />
-      </lineSegments>
+      <group rotation={[-Math.PI / 2, 0, 0]}>
+        <lineSegments geometry={edges as any} onClick={onSelect}>
+          <lineBasicMaterial color={project.color} opacity={0.9} transparent />
+        </lineSegments>
+      </group>
       <Text
         position={[0, height + 0.3, 0]}
-        fontSize={0.25}
+        fontSize={0.3}
         color={project.color}
         anchorX="center"
         anchorY="middle"
