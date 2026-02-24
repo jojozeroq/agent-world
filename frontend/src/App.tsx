@@ -76,7 +76,7 @@ export default function App() {
       </main>
 
       <aside className={`right-panel${isRightOpen ? ' open' : ''}`}>
-        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null) }}>[X]</button>
+        <button className="panel-close" onClick={() => { setIsRightOpen(false); setSelectedAgentId(null); setIsLeftOpen(true) }}>[X]</button>
         {selectedAgent ? (
           <div className="panel-section">
             <div className="panel-title">▶ {selectedAgent.emoji} {selectedAgent.name}</div>
