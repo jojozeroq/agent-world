@@ -39,17 +39,13 @@ function createFlatTopHexShape(radius: number) {
   return shape
 }
 
-// Flat-top hex: edge-to-edge touching positions for ring 1
+// Flat-top hex: all 6 neighbors at distance sqrt(3)*R, angles 0/60/120/180/240/300
 function hexRing1(radius: number): [number, number][] {
-  const sqrt3 = Math.sqrt(3)
-  return [
-    [1.5 * radius, sqrt3 / 2 * radius],   // right-up
-    [0, sqrt3 * radius],                   // up
-    [-1.5 * radius, sqrt3 / 2 * radius],  // left-up
-    [-1.5 * radius, -sqrt3 / 2 * radius], // left-down
-    [0, -sqrt3 * radius],                  // down
-    [1.5 * radius, -sqrt3 / 2 * radius],  // right-down
-  ]
+  const dist = Math.sqrt(3) * radius
+  return [0, 60, 120, 180, 240, 300].map(deg => {
+    const rad = deg * Math.PI / 180
+    return [dist * Math.cos(rad), dist * Math.sin(rad)] as [number, number]
+  })
 }
 
 export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTowerClick }: HexGridProps) {
@@ -125,7 +121,14 @@ export function HexGrid({ project, tasks, position, onHexClick, onHexHover, onTo
               {cat.label}
             </Text>
             {catTasks.length > 0 && (
-              <Building tasks={catTasks} color={project.color} position={[0, 0.08, 0]} />
+              <Building tasks={catTasks} color={project.color} position={[0, 0.08, 0]}
+                onHover={(h) => {
+                  setHoveredCat(h ? cat.id : null)
+                  document.body.style.cursor = h ? 'pointer' : 'default'
+                  onHexHover?.(h ? cat.id : null)
+                }}
+                onClick={() => onHexClick?.(cat.id)}
+              />
             )}
           </group>
         )

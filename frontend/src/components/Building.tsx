@@ -7,6 +7,8 @@ interface BuildingProps {
   tasks: Task[]
   color: string
   position: [number, number, number]
+  onHover?: (hovered: boolean) => void
+  onClick?: () => void
 }
 
 const FLOOR_HEIGHT = 0.3
@@ -46,7 +48,10 @@ function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
 
   return (
     <group position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <mesh geometry={geo as any}>
+      <mesh geometry={geo as any}
+        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }}
+        onPointerOut={() => { document.body.style.cursor = 'default' }}
+      >
         <meshBasicMaterial color={color} transparent opacity={0.2} />
       </mesh>
       <lineSegments ref={lineRef} geometry={edges as any}>
@@ -56,10 +61,14 @@ function Floor({ task, y, color }: { task: Task; y: number; color: string }) {
   )
 }
 
-export function Building({ tasks, color, position }: BuildingProps) {
+export function Building({ tasks, color, position, onHover, onClick }: BuildingProps) {
   const sorted = [...tasks].sort((a, b) => b.priority - a.priority)
   return (
-    <group position={position}>
+    <group position={position}
+      onPointerOver={(e) => { e.stopPropagation(); onHover?.(true); document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { onHover?.(false); document.body.style.cursor = 'default' }}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+    >
       {sorted.map((task, i) => (
         <Floor key={task.id} task={task} y={i * FLOOR_HEIGHT} color={color} />
       ))}

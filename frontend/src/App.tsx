@@ -19,7 +19,13 @@ export default function App() {
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null)
   const [isLeftOpen, setIsLeftOpen] = useState(false)
   const [isRightOpen, setIsRightOpen] = useState(false)
-  const [isMobile] = useState(() => window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 1024)
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 1024)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
   const { agents, tasks, projects, activities, fetchAll, selectedProject, setSelectedProject } = useStore()
 
   useEffect(() => { fetchAll() }, [fetchAll])
