@@ -31,20 +31,24 @@ export const useStore = create<Store>((set) => ({
   setSelectedTask: (id) => set({ selectedTask: id }),
   setHoveredHex: (id) => set({ hoveredHex: id }),
   fetchAll: async () => {
-    const [projects, tasks, agents, activities, relations] = await Promise.all([
-      supabase.from('projects').select('*'),
-      supabase.from('tasks').select('*'),
-      supabase.from('agents').select('*'),
-      supabase.from('activities').select('*').order('created_at', { ascending: false }).limit(50),
-      supabase.from('project_relations').select('*'),
-    ])
-    set({
-      projects: projects.data || [],
-      tasks: tasks.data || [],
-      agents: agents.data || [],
-      activities: activities.data || [],
-      relations: relations.data || [],
-    })
+    try {
+      const [projects, tasks, agents, activities, relations] = await Promise.all([
+        supabase.from('projects').select('*'),
+        supabase.from('tasks').select('*'),
+        supabase.from('agents').select('*'),
+        supabase.from('activities').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('project_relations').select('*'),
+      ])
+      set({
+        projects: projects.data || [],
+        tasks: tasks.data || [],
+        agents: agents.data || [],
+        activities: activities.data || [],
+        relations: relations.data || [],
+      })
+    } catch (err) {
+      console.error('[AgentWorld] Failed to fetch data')
+    }
   },
   subscribe: () => {
     const tasksSub = supabase.channel('tasks').on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, (payload) => {
