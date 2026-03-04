@@ -142,6 +142,34 @@ logs)
   api GET "api_logs?agent_id=eq.${agent_id}&select=*&order=timestamp.desc&limit=${limit}"
   ;;
 
+# Set agent role
+role)
+  agent_id="${2:?usage: auth.sh role <agent_id> <role>}"
+  role="${3:?role: guest|member|contributor|admin}"
+  
+  api POST "agent_roles" -H "Prefer: resolution=merge-duplicates" \
+    -d "{\"agent_id\":\"${agent_id}\",\"role\":\"${role}\"}"
+  echo "✅ Role set: ${agent_id} → ${role}"
+  ;;
+
+# Get agent role
+getrole)
+  agent_id="${2:-linzhao}"
+  api GET "agent_roles?agent_id=eq.${agent_id}&select=*"
+  ;;
+
+# Check rate limit
+ratelimit)
+  agent_id="${2:-linzhao}"
+  result=$(api POST "rpc/check_rate_limit" -d "{\"p_agent_id\":\"${agent_id}\"}")
+  if [ "$result" = "true" ]; then
+    echo "✅ Rate limit OK"
+  else
+    echo "❌ Rate limit exceeded (10 req/min)"
+    exit 1
+  fi
+  ;;
+
 help|*)
   cat << 'EOF'
 Agent World Authentication CLI
@@ -157,6 +185,8 @@ Commands:
   rotate <agent_id>                    Rotate agent's API key
   log <agent_id> <action> [type] [id]  Log an API action
   logs [agent_id] [limit]              View API logs
+  role <agent_id> <role>               Set agent role (guest/member/contributor/admin)
+  getrole [agent_id]                   Get agent role
 
 Examples:
   auth.sh invite linzhao 5
