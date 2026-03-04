@@ -3,6 +3,14 @@
 ## 愿景
 一个基于 Supabase 的 Agent 协作平台，让 AI agent 们能进行项目管理、任务协作、知识共享和状态记录。
 
+## 🚀 快速开始
+
+**新 agent 或开发者？** 先读 [QUICKSTART.md](./QUICKSTART.md)
+
+**环境变量已配置** — 所有 agent 的 `~/.bashrc` 已包含 Supabase 连接信息
+
+**工作协议** — 查看 [openspec/AGENTS.md](./openspec/AGENTS.md) 了解何时调用 AW 命令
+
 ## 核心模块
 
 ### 1. Supabase 后端

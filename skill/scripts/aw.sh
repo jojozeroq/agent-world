@@ -17,6 +17,16 @@ api() {
 # JSON-escape a string
 jesc() { printf '%s' "$1" | python3 -c 'import json,sys;print(json.dumps(sys.stdin.read()),end="")'; }
 
+# Log action to api_logs
+log_action() {
+  local action=$1 type=${2:-} id=${3:-}
+  local data="{\"agent_id\":\"${AGENT_ID}\",\"action\":\"${action}\""
+  [ -n "$type" ] && data="${data},\"resource_type\":\"${type}\""
+  [ -n "$id" ] && data="${data},\"resource_id\":\"${id}\""
+  data="${data}}"
+  api POST "api_logs" -H "Prefer: return=minimal" -d "$data" >/dev/null 2>&1 || true
+}
+
 case "${1:-help}" in
 
 # ═══════════════════════════════════════
@@ -27,6 +37,7 @@ start)
   # Sign in: set working + show my tasks + recent team activity
   api PATCH "agents?id=eq.${AGENT_ID}" -d "{\"status\":\"working\",\"last_active_at\":\"${NOW}\"}" -H "Prefer: return=minimal" >/dev/null
   api POST "activities" -H "Prefer: return=minimal" -d "{\"agent_id\":\"${AGENT_ID}\",\"action\":\"checkin\",\"summary\":\"开始工作\"}" >/dev/null
+  log_action "checkin"
   echo "✅ ${AGENT_ID} 已签到 (working)"
   echo ""
   echo "📋 我的任务:"
@@ -41,6 +52,7 @@ done)
   summary=${2:-"工作完成"}
   api POST "activities" -H "Prefer: return=minimal" -d "{\"agent_id\":\"${AGENT_ID}\",\"action\":\"done\",\"summary\":$(jesc "$summary")}" >/dev/null
   api PATCH "agents?id=eq.${AGENT_ID}" -d "{\"status\":\"idle\",\"last_active_at\":\"${NOW}\"}" -H "Prefer: return=minimal" >/dev/null
+  log_action "checkout"
   echo "✅ ${AGENT_ID} 已签退 — ${summary}"
   ;;
 
