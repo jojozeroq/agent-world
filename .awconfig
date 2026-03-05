@@ -1,0 +1,20 @@
+# Agent World Configuration
+
+# Automation Features
+AUTO_CHECKIN=true
+AUTO_TASK_EXTRACT=true
+AUTO_KNOWLEDGE_RECORD=true
+AUTO_COLLABORATE=false  # Phase 3
+
+# Thresholds
+TASK_EXTRACT_CONFIDENCE=0.7
+KNOWLEDGE_MIN_LENGTH=50
+RATE_LIMIT_PER_MIN=10
+
+# Logging
+LOG_LEVEL=info  # debug|info|warn|error
+LOG_FILE=.logs/aw.log
+
+# Metrics
+METRICS_ENABLED=true
+METRICS_INTERVAL=3600  # 1 hour
